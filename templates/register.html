@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <style>
+        body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f7f9fc;
+        margin: 0;
+        padding: 40px 20px;
+        color: #333;
+        }
+       .container {
+        max-width: 420px;
+        margin: auto;
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 1.8em;
+        }
+        label {
+        display: block;
+        margin: 15px 0 5px;
+        color: #2c3e50;
+        font-weight: 600;
+        }
+        inputtype="text",
+        inputtype="password" {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 15px;
+        box-sizing: border-box;
+        transition: border 0.3s;
+        }
+        inputtype="text":focus,
+        inputtype="password":focus {
+        border-color: #28a745;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+        }
+       .error {
+        background-color: #f8d7da;
+        color: #721c24;
+        padding: 12px;
+        border: 1px solid #f5c6cb;
+        border-radius: 6px;
+        margin: 15px 0;
+        font-size: 0.95em;
+        text-align: center;
+        }
+       .success {
+        background-color: #d4edda;
+        color: #155724;
+        padding: 12px;
+        border: 1px solid #c3e6cb;
+        border-radius: 6px;
+        margin: 15px 0;
+        font-size: 0.95em;
+        text-align: center;
+        }
+        button {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        padding: 12px;
+        font-size: 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 10px;
+        font-weight: 600;
+        transition: background 0.3s;
+        }
+        button:hover:not(:disabled) {
+        background-color: #218838;
+        }
+        button:disabled {
+        background-color: #6c757d;
+        cursor: not-allowed;
+        }
+        .password-match {
+        margin-top: -10px;
+        font-size: 0.85em;
+        padding: 5px 0;
+        }
+        .password-match.valid {
+        color: #28a745;
+        }
+        .password-match.invalid {
+        color: #dc3545;
+        }
+        .back-link {
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+        color: #007bff;
+        text-decoration: none;
+        font-size: 0.95em;
+        }
+        .back-link:hover {
+        text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Регистрация</h1>
+
+    <!-- Показываем сообщения -->
+    {% if error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
+    {% if success %}
+    <div class="success">{{ success }}</div>
+    {% endif %}
+
+    <form id="registerForm" action="/register" method="post">
+        <label for="username">Имя пользователя:</label>
+        <input
+                type="text"
+                id="username"
+                name="username"
+                required
+                minlength="3"
+                maxlength="30"
+                placeholder="от 3 до 30 символов"
+                autocomplete="username">
+
+        <label for="password">Пароль:</label>
+        <input
+                type="password"
+                id="password"
+                name="password"
+                required
+                minlength="6"
+                maxlength="100"
+                placeholder="минимум 6 символов"
+                autocomplete="new-password">
+
+        <label for="confirm_password">Подтвердите пароль:</label>
+        <input
+                type="password"
+                id="confirm_password"
+                name="confirm_password"
+                required
+                placeholder="повторите пароль"
+                autocomplete="new-password">
+        <div class="password-match" id="passwordMatch"></div>
+
+        <!-- Скрытое поле: все новые пользователи — 'user' -->
+        <input type="hidden" name="role" value="user">
+
+        <button type="submit">
+            <span class="button-text">Зарегистрироваться</span>
+        </button>
+    </form>
+
+    <a href="/login" class="back-link">← Уже есть аккаунт? Войти</a>
+</div>
+
+<script>
+    const password = document.getElementById('password');
+    const confirm = document.getElementById('confirm_password');
+    const matchDiv = document.getElementById('passwordMatch');
+
+    function checkPasswordMatch() {
+    if (confirm.value === '') {
+    matchDiv.textContent = '';
+    matchDiv.className = 'password-match';
+    } else if (password.value === confirm.value) {
+    matchDiv.textContent = 'Пароли совпадают ✅';
+    matchDiv.className = 'password-match valid';
+    } else {
+    matchDiv.textContent = 'Пароли не совпадают ❌';
+    matchDiv.className = 'password-match invalid';
+    }
+    }
+
+    confirm.addEventListener('input', checkPasswordMatch);
+    password.addEventListener('input', checkPasswordMatch);
+
+    // Блокировка отправки при несовпадении
+    document.getElementById('registerForm').onsubmit = function(e) {
+    if (password.value !== confirm.value) {
+    e.preventDefault();
+    alert('Пароли не совпадают. Проверьте ввод.');
+    }
+    };
+</script>
+</body>
+</html>

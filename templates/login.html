@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход в систему</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f7f9fc;
+            margin: 0;
+            padding: 40px 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        label {
+            display: block;
+            margin: 15px 0 5px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
+            transition: border 0.3s;
+            box-sizing: border-box;
+        }
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: #28a745;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border: 1px solid #f5c6cb;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-size: 0.95em;
+            text-align: center;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        button:hover:not(:disabled) {
+            background-color: #218838;
+        }
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .loading-text {
+            display: none;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #007bff;
+            text-decoration: none;
+            font-size: 0.95em;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Вход</h1>
+
+        <!-- Отображение ошибки, если есть -->
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <form id="loginForm" action="/login" method="post">
+            <label for="username">Имя пользователя:</label>
+            <input
+                type="text"
+                id="username"
+                name="username"
+                required
+                maxlength="50"
+                placeholder="Введите логин">
+
+            <label for="password">Пароль:</label>
+            <input
+                type="password"
+                id="password"
+                name="password"
+                required
+                maxlength="100"
+                placeholder="Введите пароль">
+
+            <button type="submit">
+                <span class="button-text">Войти</span>
+                <span class="loading-text">Входим...</span>
+            </button>
+        </form>
+
+        <a href="/register" class="back-link">Нет аккаунта? Зарегистрироваться</a>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').onsubmit = function() {
+            const button = this.querySelector('button');
+            const text = button.querySelector('.button-text');
+            const loading = button.querySelector('.loading-text');
+
+            // Блокируем повторную отправку
+            if (button.disabled) {
+                return false;
+            }
+
+            // Проверка на пустые поля
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            if (!username || !password) {
+                alert('Пожалуйста, заполните все поля.');
+                return false;
+            }
+
+            // Показываем индикатор загрузки
+            button.disabled = true;
+            text.style.display = 'none';
+            loading.style.display = 'inline';
+        };
+    </script>
+</body>
+</html>

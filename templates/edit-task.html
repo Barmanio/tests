@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}✏️ Редактировать задачу{% endblock %}
+
+{% block content %}
+<h1>✏️ Редактировать задачу</h1>
+
+{% if error %}
+<div style="color: #e74c3c; background: #fadbd8; padding: 12px; border-radius: 6px; margin-bottom: 16px;">
+ <strong>❌ Ошибка:</strong> {{ error }}
+</div>
+{% endif %}
+
+<form method="post" action="/update-task">
+ <input type="hidden" name="task_id" value="{{ task.id }}">
+
+ <div style="margin-bottom: 16px;">
+ <label for="title" style="display: block; margin-bottom: 6px; font-weight: 500;">Название задачи</label>
+ <input
+ type="text"
+ id="title"
+ name="title"
+ value="{{ task.title }}"
+ required
+ maxlength="100"
+ style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 15px; box-sizing: border-box;">
+ </div>
+
+ <div style="margin-bottom: 16px;">
+ <label for="description" style="display: block; margin-bottom: 6px; font-weight: 500;">Описание</label>
+ <textarea
+ id="description"
+ name="description"
+ required
+ maxlength="1000"
+ style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 15px; box-sizing: border-box; min-height: 120px; resize: vertical;">{{ task.description }}</textarea>
+ </div>
+
+ <h2>🧪 Тестовые примеры</h2>
+ <div id="tests-container">
+ {% for test in tests %}
+ <div class="test-group" style="background: #f8f9fa; padding: 16px; border: 1px solid #e9ecef; border-radius: 6px; margin-bottom: 12px; position: relative;">
+ <button type="button" class="remove-test" onclick="removeTest(this)" style="position: absolute; top: 8px; right: 8px; background: #e74c3c; color: white; border: none; width: 24px; height: 24px; border-radius: 50%; font-size: 14px; cursor: pointer;">×</button>
+
+ <div style="margin-bottom: 12px;">
+ <label>Входные данные</label>
+ <textarea
+ name="input_data"
+ required
+ style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box; font-family: monospace; resize: vertical; min-height: 60px;">{{ test.input }}</textarea>
+ </div>
+
+ <div style="margin-bottom: 12px;">
+ <label>Ожидаемый результат</label>
+ <textarea
+ name="expected_output"
+ required
+ style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box; font-family: monospace; resize: vertical; min-height: 60px;">{{ test.expected_output }}</textarea>
+ </div>
+ </div>
+ {% endfor %}
+ </div>
+
+ <button
+ type="button"
+ onclick="addTest()"
+ style="background: #3498db; color: white; border: none; padding: 10px 16px; border-radius: 6px; cursor: pointer; margin-bottom: 16px;">
+ + Добавить тест
+ </button>
+
+ <div style="text-align: center;">
+ <button
+ type="submit"
+ style="background: #27ae60; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-size: 16px; cursor: pointer;">
+ 🔄 Обновить задачу
+ </button>
+ </div>
+</form>
+
+<a href="/tasks/{{ task.id }}" style="display: block; text-align: center; margin-top: 20px; color: #3498db; text-decoration: none;">← Вернуться к задаче</a>
+
+<script>
+function addTest() {
+ const container = document.getElementById('tests-container');
+ const group = document.createElement('div');
+ group.className = 'test-group';
+ group.style = 'background: #f8f9fa; padding: 16px; border: 1px solid #e9ecef; border-radius: 6px; margin-bottom: 12px; position: relative;';
+
+ group.innerHTML = `
+ <button type="button" class="remove-test" onclick="removeTest(this)" style="position: absolute; top: 8px; right: 8px; background: #e74c3c; color: white; border: none; width: 24px; height: 24px; border-radius: 50%; font-size: 14px; cursor: pointer;">×</button>
+
+ <div style="margin-bottom: 12px;">
+ <label>Входные данные</label>
+ <textarea name="input_data" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box; font-family: monospace; resize: vertical; min-height: 60px;"></textarea>
+ </div>
+
+ <div style="margin-bottom: 12px;">
+ <label>Ожидаемый результат</label>
+ <textarea name="expected_output" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box; font-family: monospace; resize: vertical; min-height: 60px;"></textarea>
+ </div>
+ `;
+ container.appendChild(group);
+}
+
+function removeTest(button) {
+ const group = button.closest('.test-group');
+ if (document.querySelectorAll('.test-group').length > 1) {
+ group.remove();
+ }
+}
+</script>
+
+<style>
+ .remove-test:hover { background: #c0392b; }
+</style>
+{% endblock %}
